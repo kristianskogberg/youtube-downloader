@@ -243,7 +243,7 @@ export default function VideoForm() {
                 </div>
               </div>
             )}
-            <div className="flex space-x-4">
+            <div className="flex space-x-4 items-end">
               <div className="flex-1">
                 <label
                   htmlFor="format"
@@ -263,33 +263,14 @@ export default function VideoForm() {
                 </select>
               </div>
               <div className="flex-1">
-                <label
-                  htmlFor="quality"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                <button
+                  onClick={downloadVideo}
+                  className="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                 >
-                  Quality
-                </label>
-                <select
-                  id="quality"
-                  value={quality}
-                  onChange={(e) => setQuality(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="144p">144p</option>
-                  <option value="240p">240p</option>
-                  <option value="360p">360p</option>
-                  <option value="480p">480p</option>
-                  <option value="720p">720p</option>
-                  <option value="1080p">1080p</option>
-                </select>
+                  Download
+                </button>
               </div>
             </div>
-            <button
-              onClick={downloadVideo}
-              className="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-            >
-              Download
-            </button>
           </div>
           {progress && (
             <p className="mt-4 text-blue-500 font-semibold">{progress}</p>

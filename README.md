@@ -10,10 +10,6 @@ This is a web app for downloading and splitting YouTube videos created using Nex
 ## Getting Started
 
 ```bash
-git clone https://github.com/yourusername/your-repo-name.git
-cd your-repo-name
 npm install
 npm run dev
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to use the YouTube Downloader web app.

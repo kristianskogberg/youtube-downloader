@@ -34,10 +34,10 @@ export async function POST(req: Request) {
 
   const formatSelection =
     format === "webm"
-      ? `bestvideo[ext=webm][height<=${quality}]+bestaudio[ext=webm]/best[ext=webm]/best`
+      ? "bestvideo[ext=webm]+bestaudio[ext=webm]/best[ext=webm]/best"
       : format === "mp3"
-      ? `bestaudio/best`
-      : `bv*[vcodec^=avc1][height<=${quality}]+ba[acodec^=mp4a]/b[ext=mp4]`;
+      ? "bestaudio/best"
+      : "bestvideo[vcodec^=avc1]+bestaudio[acodec^=mp4a]/best[ext=mp4]";
 
   return new Response(
     new ReadableStream({
