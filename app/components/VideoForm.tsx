@@ -4,7 +4,6 @@ import type React from "react";
 import { useState, useRef, useEffect } from "react";
 import VideoPreview from "./VideoPreview";
 import { useVideoStore } from "@/store/videoStore";
-import { useRouter } from "next/navigation";
 
 const formatTime = (seconds: number) => {
   const minutes = Math.floor(seconds / 60);
@@ -32,21 +31,10 @@ export default function VideoForm() {
     setVideoUrl,
     setStartTime,
     setEndTime,
-    setDuration,
     setFormat,
     setQuality,
   } = useVideoStore();
   const videoPreviewRef = useRef<any>(null);
-  const router = useRouter();
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const url = urlParams.get("videoUrl");
-    if (url) {
-      setVideoUrl(url);
-      setInput(url);
-    }
-  }, []);
 
   const isYouTubeUrl = async (url: string) => {
     const pattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
