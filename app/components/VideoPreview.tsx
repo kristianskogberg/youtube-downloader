@@ -19,7 +19,6 @@ declare global {
 const VideoPreview = forwardRef((props, ref) => {
   const { videoUrl, startTime, endTime, setEndTime, setDuration } =
     useVideoStore();
-  const [isDownloading, setIsDownloading] = useState(false);
   const playerRef = useRef<any>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
@@ -67,14 +66,6 @@ const VideoPreview = forwardRef((props, ref) => {
     }
   }, [startTime]);
 
-  const handleDownload = async () => {
-    setIsDownloading(true);
-    // Simulate download process
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setIsDownloading(false);
-    alert("Download complete! (This is a mock download)");
-  };
-
   const getVideoId = (url: string) => {
     const urlObj = new URL(url);
     return urlObj.searchParams.get("v");
@@ -82,7 +73,6 @@ const VideoPreview = forwardRef((props, ref) => {
 
   return (
     <div className="border-t border-gray-200 pt-6">
-      <h2 className="text-lg font-semibold mb-4">Video Preview</h2>
       <div
         className="relative pb-9/16 mb-4"
         style={{ paddingBottom: "56.25%" }}

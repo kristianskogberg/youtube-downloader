@@ -187,7 +187,7 @@ export async function POST(req: Request) {
 
             controller.enqueue(
               `data: ${JSON.stringify({
-                progress: "Starting trimming...",
+                progress: "Preparing to cut the video...",
               })}\n\n`
             );
 

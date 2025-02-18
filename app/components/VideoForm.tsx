@@ -4,11 +4,23 @@ import type React from "react";
 import { useState, useRef, useEffect } from "react";
 import VideoPreview from "./VideoPreview";
 import { useVideoStore } from "@/store/videoStore";
+import { FiDownload } from "react-icons/fi";
+import { MdOutlineSearch } from "react-icons/md";
+import { FiEdit } from "react-icons/fi";
+import { useRouter } from "next/navigation";
 
 const formatTime = (seconds: number) => {
-  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
   const remainingSeconds = Math.floor(seconds % 60);
-  return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
+
+  if (hours > 0) {
+    return `${hours}:${minutes < 10 ? "0" : ""}${minutes}:${
+      remainingSeconds < 10 ? "0" : ""
+    }${remainingSeconds}`;
+  } else {
+    return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
+  }
 };
 
 const parseTime = (time: string) => {
@@ -21,6 +33,7 @@ export default function VideoForm() {
   const [error, setError] = useState("");
   const [progress, setProgress] = useState<string>("");
   const [editMode, setEditMode] = useState(false);
+  const router = useRouter();
 
   const {
     videoUrl,
@@ -93,6 +106,14 @@ export default function VideoForm() {
     setEndTime(currentTime);
   };
 
+  function handleReset() {
+    setInput("");
+    setVideoUrl("");
+    setStartTime(0);
+    setEndTime(0);
+    setProgress("");
+  }
+
   async function downloadVideo() {
     setProgress("Starting download...");
 
@@ -158,22 +179,33 @@ export default function VideoForm() {
     <div className="p-6 space-y-4">
       <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
         <div>
-          <label
-            htmlFor="video-url"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            YouTube Video URL
-          </label>
-          <input
-            id="video-url"
-            type="url"
-            value={input}
-            placeholder="https://www.youtube.com/watch?v=..."
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            onChange={(e) => handleUrlChange(e.target.value)}
-            onPaste={handleUrlPaste}
-          />
-          {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+          {videoUrl === "" ? (
+            <>
+              <label
+                htmlFor="video-url"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                YouTube Video URL
+              </label>
+              <input
+                id="video-url"
+                type="url"
+                value={input}
+                placeholder="https://www.youtube.com/watch?v=..."
+                className="w-full px-3 py-2 border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                onChange={(e) => handleUrlChange(e.target.value)}
+                onPaste={handleUrlPaste}
+              />
+              {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+            </>
+          ) : (
+            <div className="flex items-center justify-start">
+              <button onClick={handleReset}>
+                <MdOutlineSearch size={22} className="inline-block mr-1" /> Back
+                to Search...
+              </button>
+            </div>
+          )}
         </div>
       </form>
 
@@ -183,8 +215,9 @@ export default function VideoForm() {
           <div className="flex justify-between items-center mb-4">
             <button
               onClick={() => setEditMode(!editMode)}
-              className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+              className="flex justify-center items-center px-4 py-2 bg-gray-600 text-white  hover:bg-gray-700 "
             >
+              <FiEdit className="inline-block mr-2" />{" "}
               {editMode ? "Disable Edit Mode" : "Enable Edit Mode"}
             </button>
           </div>
@@ -205,12 +238,12 @@ export default function VideoForm() {
                       value={formatTime(startTime)}
                       onChange={(e) => setStartTime(parseTime(e.target.value))}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                     <button
                       type="button"
                       onClick={handleSetStartTime}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                      className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                     >
                       Set
                     </button>
@@ -230,12 +263,12 @@ export default function VideoForm() {
                       value={formatTime(endTime)}
                       onChange={(e) => setEndTime(parseTime(e.target.value))}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                     <button
                       type="button"
                       onClick={handleSetEndTime}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                      className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                     >
                       Set
                     </button>
@@ -255,7 +288,7 @@ export default function VideoForm() {
                   id="format"
                   value={format}
                   onChange={(e) => setFormat(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300  shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value="mp4">MP4</option>
                   <option value="webm">WebM</option>
@@ -265,8 +298,9 @@ export default function VideoForm() {
               <div className="flex-1">
                 <button
                   onClick={downloadVideo}
-                  className="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                  className="flex items-center justify-center w-full px-4 py-2 bg-slate-700 text-white  hover:bg-slate-800"
                 >
+                  <FiDownload size={20} className="inline-block mr-2" />
                   Download
                 </button>
               </div>
