@@ -1,13 +1,7 @@
 "use client";
 
-import {
-  useState,
-  useEffect,
-  useRef,
-  forwardRef,
-  useImperativeHandle,
-} from "react";
-import { useVideoStore } from "@/store/videoStore";
+import { useEffect, useRef, forwardRef, useImperativeHandle } from "react";
+import { useVideoStore } from "../../store/videoStore";
 
 declare global {
   interface Window {
@@ -17,8 +11,7 @@ declare global {
 }
 
 const VideoPreview = forwardRef((props, ref) => {
-  const { videoUrl, startTime, endTime, setEndTime, setDuration } =
-    useVideoStore();
+  const { videoUrl, startTime, setEndTime, setDuration } = useVideoStore();
   const playerRef = useRef<any>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 

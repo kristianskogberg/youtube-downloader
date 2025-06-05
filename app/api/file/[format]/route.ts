@@ -1,13 +1,13 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import path from "path";
 import fs from "fs";
 
 export async function GET(
-  req: Request,
-  { params }: { params: { format: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ format: string }> }
 ) {
   const reqparams = await params;
-  const format = reqparams.format;
+  const { format } = reqparams;
   const outputFile = path.join(process.cwd(), `output.${format}`);
 
   if (!fs.existsSync(outputFile)) {

@@ -1,13 +1,12 @@
 "use client";
 
 import type React from "react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import VideoPreview from "./VideoPreview";
-import { useVideoStore } from "@/store/videoStore";
+import { useVideoStore } from "../../store/videoStore";
 import { FiDownload } from "react-icons/fi";
 import { MdOutlineSearch } from "react-icons/md";
 import { FiEdit } from "react-icons/fi";
-import { useRouter } from "next/navigation";
 
 const formatTime = (seconds: number) => {
   const hours = Math.floor(seconds / 3600);
@@ -33,7 +32,6 @@ export default function VideoForm() {
   const [error, setError] = useState("");
   const [progress, setProgress] = useState<string>("");
   const [editMode, setEditMode] = useState(false);
-  const router = useRouter();
 
   const {
     videoUrl,
@@ -45,7 +43,6 @@ export default function VideoForm() {
     setStartTime,
     setEndTime,
     setFormat,
-    setQuality,
   } = useVideoStore();
   const videoPreviewRef = useRef<any>(null);
 
