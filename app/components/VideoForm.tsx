@@ -31,6 +31,7 @@ export default function VideoForm() {
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
   const [progress, setProgress] = useState<string>("");
+  const [progressPercent, setProgressPercent] = useState<number>(0);
   const [editMode, setEditMode] = useState(false);
 
   const {
@@ -109,10 +110,12 @@ export default function VideoForm() {
     setStartTime(0);
     setEndTime(0);
     setProgress("");
+    setProgressPercent(0);
   }
 
   async function downloadVideo() {
     setProgress("Starting download...");
+    setProgressPercent(0);
 
     const response = await fetch("/api/download", {
       method: "POST",
@@ -149,6 +152,18 @@ export default function VideoForm() {
           const json = JSON.parse(update.replace("data: ", "").trim());
           if (json.progress) {
             setProgress(json.progress);
+
+            // Extract percentage from progress string
+            const percentMatch = json.progress.match(/(\d+\.?\d*)%/);
+            if (percentMatch) {
+              const percent = parseFloat(percentMatch[1]);
+              setProgressPercent(percent);
+            } else if (
+              json.progress.includes("complete") ||
+              json.progress.includes("Complete")
+            ) {
+              setProgressPercent(100);
+            }
           }
           if (json.downloadUrl) {
             downloadUrl = json.downloadUrl;
@@ -161,6 +176,7 @@ export default function VideoForm() {
 
     if (downloadUrl) {
       setProgress("Download complete!");
+      setProgressPercent(100);
       const link = document.createElement("a");
       link.href = downloadUrl;
       link.download = `video.${format}`;
@@ -169,6 +185,7 @@ export default function VideoForm() {
       document.body.removeChild(link);
     } else {
       setProgress("Failed to download video.");
+      setProgressPercent(0);
     }
   }
 
@@ -304,7 +321,20 @@ export default function VideoForm() {
             </div>
           </div>
           {progress && (
-            <p className="mt-4 text-blue-500 font-semibold">{progress}</p>
+            <div className="mt-4 space-y-2">
+              <div className="flex justify-between items-center">
+                <p className="text-blue-600 font-medium">{progress}</p>
+                <span className="text-sm text-gray-500">
+                  {progressPercent.toFixed(1)}%
+                </span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2.5">
+                <div
+                  className="bg-blue-600 h-2.5 rounded-full transition-all duration-300 ease-out"
+                  style={{ width: `${Math.min(progressPercent, 100)}%` }}
+                ></div>
+              </div>
+            </div>
           )}
         </>
       )}
